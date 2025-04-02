@@ -1,0 +1,24 @@
+### Create edge
+POST http://localhost:8080/edge
+Content-Type: application/json
+Accept: application/json
+
+{
+  "fromId": 4,
+  "toId": 4
+}
+
+### Get all edges
+GET http://localhost:8080/edge
+Content-Type: application/json
+Accept: application/json
+
+### Get edge by id
+GET http://localhost:8080/edge/4
+Content-Type: application/json
+Accept: application/json
+
+### Delete edge by id
+DELETE http://localhost:8080/edge/4
+Content-Type: application/json
+Accept: application/json
