@@ -19,6 +19,11 @@ Content-Type: application/json
 Accept: application/json
 
 ### Delete edge by id
-DELETE http://localhost:8080/edge/4
+DELETE http://localhost:8080/edge/1
+Content-Type: application/json
+Accept: application/json
+
+### Get tree by fromId
+GET http://localhost:8080/tree/1
 Content-Type: application/json
 Accept: application/json

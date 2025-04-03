@@ -2,6 +2,7 @@ package com.prewave.edge.controller
 
 import com.prewave.edge.dto.CreateEdgeDto
 import com.prewave.edge.dto.EdgeResponseDto
+import com.prewave.edge.dto.TreeResponse
 import com.prewave.edge.service.EdgeService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus.CONFLICT
@@ -49,5 +50,11 @@ class EdgeController {
     fun deleteEdge(@PathVariable edgeId: Int): ResponseEntity<Void> {
         edgeService.deleteById(edgeId)
         return ResponseEntity.noContent().build()
+    }
+
+    @GetMapping(value = ["/tree/{fromId}"])
+    fun getTree(@PathVariable fromId: Int): ResponseEntity<TreeResponse> {
+        val tree = edgeService.getTree(fromId)
+        return ResponseEntity.ok(tree)
     }
 }
