@@ -2,6 +2,8 @@ package com.prewave.edge.configuration
 
 import org.jooq.DSLContext
 import org.jooq.SQLDialect
+import org.jooq.conf.RenderQuotedNames
+import org.jooq.conf.Settings
 import org.jooq.impl.DataSourceConnectionProvider
 import org.jooq.impl.DefaultConfiguration
 import org.jooq.impl.DefaultDSLContext
@@ -52,6 +54,9 @@ class JooqConfig {
         val sqlDialectName: String = environment!!.getRequiredProperty("spring.jooq.sql-dialect")
         val dialect = SQLDialect.valueOf(sqlDialectName)
         jooqConfiguration.set(dialect)
+        val settings = Settings()
+        settings.withRenderQuotedNames(RenderQuotedNames.NEVER)
+        jooqConfiguration.setSettings(settings)
         return jooqConfiguration
     }
 

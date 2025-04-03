@@ -5,9 +5,7 @@ import com.prewave.edge.dto.EdgeResponseDto
 import com.prewave.edge.exception.EntityNotFoundException
 import org.jooq.DSLContext
 import org.jooq.Record
-import org.jooq.generated.public_.Sequences.SQ_ID
-import org.jooq.generated.public_.tables.Edge
-import org.springframework.beans.factory.annotation.Autowired
+import org.jooq.generated.tables.Edge
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -16,27 +14,24 @@ import org.springframework.transaction.annotation.Transactional
  */
 @Service
 @Transactional
-class EdgeService {
+class EdgeService(private val dslContext: DSLContext) {
 
-    @Autowired
-    private val dslContext: DSLContext? = null
-
-    fun createEdge(createEdgeDto: CreateEdgeDto?): Int {
-        val id = SQ_ID.nextval()
-        return dslContext!!.insertInto(Edge.EDGE)
-            .values(id, createEdgeDto!!.fromId, createEdgeDto.toId)
+    fun createEdge(createEdgeDto: CreateEdgeDto): Int {
+        return dslContext.insertInto(Edge.EDGE)
+            .set(Edge.EDGE.FROM_ID, createEdgeDto.fromId)
+            .set(Edge.EDGE.TO_ID, createEdgeDto.toId)
             .execute()
     }
 
     fun getAllEdges(): List<EdgeResponseDto> {
-        return dslContext!!.select()
+        return dslContext.select()
             .from(Edge.EDGE)
             .fetch()
             .map { toEdgeResponseDto(it) }
     }
 
-    fun getEdge(edgeId: Int?): EdgeResponseDto {
-        val fetchOne = dslContext!!.select()
+    fun findById(edgeId: Int): EdgeResponseDto {
+        val fetchOne = dslContext.select()
             .from(Edge.EDGE)
             .where(Edge.EDGE.ID.eq(edgeId))
             .fetchOne()
@@ -46,16 +41,16 @@ class EdgeService {
         } else throw EntityNotFoundException("Edge not found")
     }
 
-    private fun toEdgeResponseDto(fetchOne: Record): EdgeResponseDto {
+    private fun toEdgeResponseDto(edgeRecord: Record): EdgeResponseDto {
         return EdgeResponseDto(
-            fetchOne.get(Edge.EDGE.ID),
-            fetchOne.get(Edge.EDGE.FROM_ID),
-            fetchOne.get(Edge.EDGE.TO_ID)
+            edgeRecord.get(Edge.EDGE.ID),
+            edgeRecord.get(Edge.EDGE.FROM_ID),
+            edgeRecord.get(Edge.EDGE.TO_ID)
         )
     }
 
-    fun deleteById(edgeId: Int?) {
-        dslContext!!.deleteFrom(Edge.EDGE)
+    fun deleteById(edgeId: Int) {
+        dslContext.deleteFrom(Edge.EDGE)
             .where(Edge.EDGE.ID.eq(edgeId))
             .execute()
     }

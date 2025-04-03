@@ -3,13 +3,9 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
-    <changeSet author="Peter Pivarnik" id="create-id-sequence">
-        <createSequence sequenceName="sq_id" startValue="1"/>
-    </changeSet>
-
     <changeSet author="Peter Pivarnik" id="create_edge_table">
-        <createTable tableName="edge">
-            <column name="id" type="INTEGER">
+        <createTable tableName="edge" schemaName="public">
+            <column name="id" type="INTEGER" autoIncrement="true" startWith="1">
                 <constraints primaryKey="true"/>
             </column>
             <column name="from_id" type="INTEGER">

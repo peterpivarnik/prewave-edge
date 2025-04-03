@@ -4,8 +4,8 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "fromId": 4,
-  "toId": 4
+  "fromId": 1,
+  "toId": 2
 }
 
 ### Get all edges

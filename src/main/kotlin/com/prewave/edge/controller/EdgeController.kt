@@ -23,7 +23,7 @@ class EdgeController {
     }
 
     @PostMapping(value = ["/edge"])
-    fun createEdge(@RequestBody createEdgeDto: CreateEdgeDto?): ResponseEntity<Void> {
+    fun createEdge(@RequestBody createEdgeDto: CreateEdgeDto): ResponseEntity<Void> {
         val response: Int = edgeService.createEdge(createEdgeDto)
         if (response != 1) {
             return ResponseEntity.status(CONFLICT)
@@ -40,13 +40,13 @@ class EdgeController {
     }
 
     @GetMapping(value = ["/edge/{edgeId}"])
-    fun getEdge(@PathVariable edgeId: Int?): ResponseEntity<EdgeResponseDto> {
-        val edge: EdgeResponseDto = edgeService.getEdge(edgeId)
+    fun getEdge(@PathVariable edgeId: Int): ResponseEntity<EdgeResponseDto> {
+        val edge: EdgeResponseDto = edgeService.findById(edgeId)
         return ResponseEntity.ok(edge)
     }
 
     @DeleteMapping(value = ["/edge/{edgeId}"])
-    fun deleteEdge(@PathVariable edgeId: Int?): ResponseEntity<Void> {
+    fun deleteEdge(@PathVariable edgeId: Int): ResponseEntity<Void> {
         edgeService.deleteById(edgeId)
         return ResponseEntity.noContent().build()
     }

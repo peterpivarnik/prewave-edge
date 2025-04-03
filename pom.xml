@@ -44,6 +44,11 @@
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-meta-extensions-liquibase</artifactId>
+            <version>3.20.2</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -93,6 +98,11 @@
                         <artifactId>postgresql</artifactId>
                         <version>${postgresql.version}</version>
                     </dependency>
+                    <dependency>
+                        <groupId>org.jooq</groupId>
+                        <artifactId>jooq-meta-extensions-liquibase</artifactId>
+                        <version>3.20.2</version>
+                    </dependency>
                 </dependencies>
                 <configuration>
                     <jdbc>
@@ -102,9 +112,22 @@
                         <password>edgepassword</password>
                     </jdbc>
                     <generator>
-                        <name>org.jooq.codegen.JavaGenerator</name>
                         <database>
-                            <excludes>databasechangelog|databasechangeloglock</excludes>
+                            <name>org.jooq.meta.extensions.liquibase.LiquibaseDatabase</name>
+                            <properties>
+                                <property>
+                                    <key>rootPath</key>
+                                    <value>${basedir}/src/main/resources</value>
+                                </property>
+                                <property>
+                                    <key>scripts</key>
+                                    <value>db/db.changelog-master.xml</value>
+                                </property>
+                                <property>
+                                    <key>unqualifiedSchema</key>
+                                    <value>none</value>
+                                </property>
+                            </properties>
                         </database>
                     </generator>
                 </configuration>

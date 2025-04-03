@@ -7,3 +7,8 @@ spring:
     sql-dialect: POSTGRES
   liquibase:
     change-log: classpath:db/db.changelog-master.xml
+logging:
+  level:
+    root: INFO
+    org:
+      jooq: DEBUG
