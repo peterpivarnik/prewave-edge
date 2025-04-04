@@ -1,4 +1,4 @@
 package com.prewave.edge.exception
 
-class EntityNotFoundException(message: String?) : EdgeException(message) {
+class EntityNotFoundException(val entityName: String, override val message: String) : EdgeException(message) {
 }

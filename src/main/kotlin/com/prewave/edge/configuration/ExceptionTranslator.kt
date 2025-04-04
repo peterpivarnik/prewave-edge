@@ -9,11 +9,8 @@ class ExceptionTranslator : ExecuteListener {
 
     override fun exception(context: ExecuteContext) {
         val dialect = context.configuration().dialect()
-        val translator
-                : SQLExceptionTranslator = SQLErrorCodeSQLExceptionTranslator(dialect.name)
+        val translator: SQLExceptionTranslator = SQLErrorCodeSQLExceptionTranslator(dialect.name)
         context.exception(
-            translator
-                .translate("Access database using Jooq", context.sql(), context.sqlException()!!)
-        )
+                translator.translate("Access database using Jooq", context.sql(), context.sqlException()!!))
     }
 }

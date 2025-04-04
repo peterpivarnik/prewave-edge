@@ -30,7 +30,7 @@ class EdgeService(private val dslContext: DSLContext) {
 
         if (edgeIdRecord != null) {
             return edgeIdRecord.get(EDGE.ID)
-        } else throw EntityNotFoundException("Edge not found")
+        } else throw EntityNotFoundException(EDGE.name, "Edge not found")
     }
 
     fun getAllEdges(): List<EdgeResponseDto> {
@@ -48,7 +48,7 @@ class EdgeService(private val dslContext: DSLContext) {
 
         if (fetchOne != null) {
             return toEdgeResponseDto(fetchOne)
-        } else throw EntityNotFoundException("Edge not found")
+        } else throw EntityNotFoundException(EDGE.name, "Edge with id=$edgeId not found!")
     }
 
     private fun toEdgeResponseDto(edgeRecord: Record): EdgeResponseDto {
