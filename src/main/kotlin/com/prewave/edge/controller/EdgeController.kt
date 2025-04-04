@@ -4,8 +4,6 @@ import com.prewave.edge.dto.CreateEdgeDto
 import com.prewave.edge.dto.EdgeResponseDto
 import com.prewave.edge.dto.TreeResponse
 import com.prewave.edge.service.EdgeService
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus.CONFLICT
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.net.URI
@@ -14,23 +12,12 @@ import java.net.URI
  * Rest controller for http resource /edge
  */
 @RestController
-class EdgeController {
-
-    lateinit var edgeService: EdgeService
-
-    @Autowired
-    fun initialize(edgeService: EdgeService) {
-        this.edgeService = edgeService
-    }
+class EdgeController(var edgeService: EdgeService) {
 
     @PostMapping(value = ["/edge"])
-    fun createEdge(@RequestBody createEdgeDto: CreateEdgeDto): ResponseEntity<Void> {
-        val response: Int = edgeService.createEdge(createEdgeDto)
-        if (response != 1) {
-            return ResponseEntity.status(CONFLICT)
-                .build()
-        }
-        return ResponseEntity.created(URI.create(""))
+    fun createEdge(@RequestBody createEdgeDto: CreateEdgeDto): ResponseEntity<EdgeResponseDto> {
+        val edgeId = edgeService.createEdge(createEdgeDto)
+        return ResponseEntity.created(URI.create("http://localhost:8080/edge/${edgeId}"))
             .build()
     }
 

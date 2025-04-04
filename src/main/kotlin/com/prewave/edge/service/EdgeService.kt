@@ -21,11 +21,16 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class EdgeService(private val dslContext: DSLContext) {
 
-    fun createEdge(createEdgeDto: CreateEdgeDto): Int {
-        return dslContext.insertInto(EDGE)
+    fun createEdge(createEdgeDto: CreateEdgeDto): Int? {
+        val edgeIdRecord = dslContext.insertInto(EDGE)
             .set(EDGE.FROM_ID, createEdgeDto.fromId)
             .set(EDGE.TO_ID, createEdgeDto.toId)
-            .execute()
+            .returningResult(EDGE.ID)
+            .fetchOne()
+
+        if (edgeIdRecord != null) {
+            return edgeIdRecord.get(EDGE.ID)
+        } else throw EntityNotFoundException("Edge not found")
     }
 
     fun getAllEdges(): List<EdgeResponseDto> {

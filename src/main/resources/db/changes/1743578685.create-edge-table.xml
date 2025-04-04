@@ -16,4 +16,10 @@
             </column>
         </createTable>
     </changeSet>
+
+    <changeSet  author="Peter Pivarnik" id="make_from_id_and_to_id_unique_in_edge">
+        <addUniqueConstraint tableName="edge"
+                             columnNames="from_id, to_id"
+                             constraintName="UNQ_EDGE_FROM_ID_TO_ID"/>
+    </changeSet>
 </databaseChangeLog>
