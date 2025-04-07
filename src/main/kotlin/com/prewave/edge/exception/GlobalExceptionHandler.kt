@@ -2,8 +2,7 @@ package com.prewave.edge.exception
 
 import org.postgresql.util.PSQLException
 import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpStatus.BAD_REQUEST
-import org.springframework.http.HttpStatus.NOT_FOUND
+import org.springframework.http.HttpStatus.*
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -19,8 +18,7 @@ internal class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
 
     @ResponseStatus(value = NOT_FOUND)
     @ExceptionHandler(EntityNotFoundException::class)
-    fun handleEntityNotFoundException(exception: EntityNotFoundException,
-                                      request: WebRequest): ResponseEntity<Any>? {
+    fun handleEntityNotFoundException(exception: EntityNotFoundException, request: WebRequest): ResponseEntity<Any>? {
         val notFound = NotFoundError(exception.entityName, exception.message)
         return super.handleExceptionInternal(exception, notFound, HttpHeaders(), NOT_FOUND, request)
     }
@@ -29,8 +27,7 @@ internal class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
 
     @ResponseStatus(value = BAD_REQUEST)
     @ExceptionHandler(PSQLException::class)
-    fun handleException(exception: PSQLException,
-                        request: WebRequest): ResponseEntity<Any>? {
+    fun handleException(exception: PSQLException, request: WebRequest): ResponseEntity<Any>? {
         val unique = UniqueError(exception.message,
                                  exception.serverErrorMessage?.constraint,
                                  exception.serverErrorMessage?.detail)
@@ -38,4 +35,15 @@ internal class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
     }
 
     private data class UniqueError(val message: String?, val constraint: String?, val detail: String?)
+
+    @ResponseStatus(value = CONFLICT)
+    @ExceptionHandler(CyclicEdgesException::class)
+    fun handleCyclicEdgesException(exception: CyclicEdgesException, request: WebRequest): ResponseEntity<Any>? {
+        val cyclic = CyclicError(exception.message,
+                                 exception.from,
+                                 exception.to)
+        return super.handleExceptionInternal(exception, cyclic, HttpHeaders(), CONFLICT, request)
+    }
+
+    private data class CyclicError(val message: String, val from: Int, val to: Int)
 }

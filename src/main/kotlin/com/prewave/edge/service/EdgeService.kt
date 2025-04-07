@@ -4,10 +4,12 @@ import com.prewave.edge.dto.CreateEdgeDto
 import com.prewave.edge.dto.EdgeResponseDto
 import com.prewave.edge.dto.EdgeWithChild
 import com.prewave.edge.dto.TreeResponse
+import com.prewave.edge.exception.CyclicEdgesException
 import com.prewave.edge.exception.EntityNotFoundException
 import org.jooq.DSLContext
 import org.jooq.Record
 import org.jooq.Record3
+import org.jooq.Result
 import org.jooq.generated.tables.Edge.EDGE
 import org.jooq.impl.DSL.*
 import org.jooq.impl.SQLDataType.INTEGER
@@ -22,6 +24,13 @@ import org.springframework.transaction.annotation.Transactional
 class EdgeService(private val dslContext: DSLContext) {
 
     fun createEdge(createEdgeDto: CreateEdgeDto): Int? {
+        val edgesForTree = getEdgesForTree(createEdgeDto.toId)
+        val filteredEdges = edgesForTree.filter { edge -> edge.get(EDGE.TO_ID) == createEdgeDto.fromId }
+        if (filteredEdges.isNotEmpty()) {
+            throw CyclicEdgesException("Edge creation not possible due to cyclic edges!",
+                                       createEdgeDto.fromId,
+                                       createEdgeDto.toId)
+        }
         val edgeIdRecord = dslContext.insertInto(EDGE)
             .set(EDGE.FROM_ID, createEdgeDto.fromId)
             .set(EDGE.TO_ID, createEdgeDto.toId)
@@ -64,6 +73,11 @@ class EdgeService(private val dslContext: DSLContext) {
     }
 
     fun getTree(fromId: Int): TreeResponse {
+        val edges = getEdgesForTree(fromId)
+        return TreeResponse(createEdgesWithChild(edges, fromId))
+    }
+
+    private fun getEdgesForTree(fromId: Int): Result<Record3<Int, Int, Int>> {
         val cte = name("Tree")
             .fields(EDGE.ID.name, EDGE.FROM_ID.name, EDGE.TO_ID.name)
             .`as`(select(EDGE.ID, EDGE.FROM_ID, EDGE.TO_ID)
@@ -77,7 +91,7 @@ class EdgeService(private val dslContext: DSLContext) {
         val edges = dslContext.withRecursive(cte)
             .selectFrom(cte)
             .fetch()
-        return TreeResponse(createEdgesWithChild(edges, fromId))
+        return edges
     }
 
     private fun createEdgesWithChild(edges: List<Record3<Int, Int, Int>>, fromId: Int): List<EdgeWithChild> {
