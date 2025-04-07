@@ -16,7 +16,7 @@
     <description>Interview development task for Prewave</description>
     <properties>
         <java.version>21</java.version>
-        <kotlin.version>1.9.25</kotlin.version>
+        <jooq-meta-extensions-liquibase.version>3.20.2</jooq-meta-extensions-liquibase.version>
     </properties>
     <dependencies>
         <dependency>
@@ -42,7 +42,6 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.7.4</version>
         </dependency>
         <dependency>
             <groupId>org.liquibase</groupId>
@@ -51,7 +50,7 @@
         <dependency>
             <groupId>org.jooq</groupId>
             <artifactId>jooq-meta-extensions-liquibase</artifactId>
-            <version>3.20.2</version>
+            <version>${jooq-meta-extensions-liquibase.version}</version>
         </dependency>
 
         <dependency>
@@ -156,5 +155,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
