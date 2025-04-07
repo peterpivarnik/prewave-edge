@@ -118,4 +118,12 @@ class EdgeService(private val dslContext: DSLContext) {
             }
             .toList()
     }
+
+    /**
+     * Delete all from edge table. For test purposes only!
+     */
+    fun deleteAll() {
+        dslContext.deleteFrom(EDGE)
+            .execute()
+    }
 }
