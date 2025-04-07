@@ -23,6 +23,9 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class EdgeService(private val dslContext: DSLContext) {
 
+    /**
+     * Creates edge.
+     */
     fun createEdge(createEdgeDto: CreateEdgeDto): Int? {
         val edgesForTree = getEdgesForTree(createEdgeDto.toId)
         val filteredEdges = edgesForTree.filter { edge -> edge.get(EDGE.TO_ID) == createEdgeDto.fromId }
@@ -42,6 +45,9 @@ class EdgeService(private val dslContext: DSLContext) {
         } else throw EntityNotFoundException(EDGE.name, "Edge not found")
     }
 
+    /**
+     * List all edges.
+     */
     fun getAllEdges(): List<EdgeResponseDto> {
         return dslContext.select()
             .from(EDGE)
@@ -49,6 +55,9 @@ class EdgeService(private val dslContext: DSLContext) {
             .map { toEdgeResponseDto(it) }
     }
 
+    /**
+     * Get edge by edgeId.
+     */
     fun findById(edgeId: Int): EdgeResponseDto {
         val fetchOne = dslContext.select()
             .from(EDGE)
@@ -66,12 +75,18 @@ class EdgeService(private val dslContext: DSLContext) {
                                edgeRecord.get(EDGE.TO_ID))
     }
 
+    /**
+     * Delete edge by edgeId.
+     */
     fun deleteById(edgeId: Int) {
         dslContext.deleteFrom(EDGE)
             .where(EDGE.ID.eq(edgeId))
             .execute()
     }
 
+    /**
+     * Get tree of edges by fromId.
+     */
     fun getTree(fromId: Int): TreeResponse {
         val edges = getEdgesForTree(fromId)
         return TreeResponse(createEdgesWithChild(edges, fromId))

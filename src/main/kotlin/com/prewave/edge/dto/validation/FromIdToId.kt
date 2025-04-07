@@ -1,13 +1,16 @@
-package com.prewave.edge.dto
+package com.prewave.edge.dto.validation
 
+import com.prewave.edge.dto.CreateEdgeDto
 import jakarta.validation.Constraint
 import jakarta.validation.ConstraintValidator
 import jakarta.validation.ConstraintValidatorContext
 import jakarta.validation.Payload
-import org.springframework.stereotype.Component
 import kotlin.annotation.AnnotationTarget.VALUE_PARAMETER
 import kotlin.reflect.KClass
 
+/**
+ * Annotation to be used for validating fromId and toId.
+ */
 @Constraint(validatedBy = [FromIdToIdValidator::class])
 @Target(VALUE_PARAMETER)
 @Retention(AnnotationRetention.RUNTIME)
@@ -15,7 +18,9 @@ annotation class FromIdToId(val message: String = "Parameters fromId, and toId m
                             val groups: Array<KClass<*>> = [],
                             val payload: Array<KClass<out Payload>> = [])
 
-@Component
+/**
+ * Validator to validate fromId and toId.
+ */
 class FromIdToIdValidator : ConstraintValidator<FromIdToId, CreateEdgeDto> {
     override fun initialize(fromIdToId: FromIdToId) {
     }

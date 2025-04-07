@@ -5,7 +5,7 @@ Accept: application/json
 
 {
   "fromId": 1,
-  "toId": 2
+  "toId": 1
 }
 
 ### Get all edges
