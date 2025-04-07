@@ -2,6 +2,7 @@ package com.prewave.edge.controller
 
 import com.prewave.edge.dto.CreateEdgeDto
 import com.prewave.edge.dto.EdgeResponseDto
+import com.prewave.edge.dto.FromIdToId
 import com.prewave.edge.dto.TreeResponse
 import com.prewave.edge.service.EdgeService
 import org.springframework.http.ResponseEntity
@@ -15,7 +16,7 @@ import java.net.URI
 class EdgeController(var edgeService: EdgeService) {
 
     @PostMapping(value = ["/edge"])
-    fun createEdge(@RequestBody createEdgeDto: CreateEdgeDto): ResponseEntity<EdgeResponseDto> {
+    fun createEdge(@RequestBody @FromIdToId createEdgeDto: CreateEdgeDto): ResponseEntity<EdgeResponseDto> {
         val edgeId = edgeService.createEdge(createEdgeDto)
         return ResponseEntity.created(URI.create("http://localhost:8080/edge/${edgeId}"))
             .build()
