@@ -26,9 +26,14 @@ Below is an example of how you can run this demo.
 7. Test application by sending requests from postman or from resource file src/test/resources/test.http
 
 List of endpoints:
+
 POST http://localhost:8080/edge creates edge
+
 GET http://localhost:8080/edge list all edges
+
 GET http://localhost:8080/edge/{edgeId) gets edge by edgeId
+
 DELETE http://localhost:8080/edge/{edgeId} delete edge by edgeId
+
 GET http://localhost:8080/tree/{fromId} return tree of edges with root edge having provided fromId
 
