@@ -22,12 +22,14 @@ class EdgeServiceTest {
         var postgres: PostgreSQLContainer<*> = PostgreSQLContainer("postgres:16-alpine")
 
         @JvmStatic
-        @BeforeAll fun beforeAll() {
+        @BeforeAll
+        fun beforeAll() {
             postgres.start()
         }
 
         @JvmStatic
-        @AfterAll fun afterAll() {
+        @AfterAll
+        fun afterAll() {
             postgres.stop()
         }
     }
@@ -35,11 +37,13 @@ class EdgeServiceTest {
     @Autowired
     private val edgeService: EdgeService? = null
 
-    @BeforeEach fun beforeEach() {
+    @BeforeEach
+    fun beforeEach() {
         edgeService?.deleteAll()
     }
 
-    @Test fun shouldCreateEdge() {
+    @Test
+    fun shouldCreateEdge() {
         var allEdges = edgeService?.getAllEdges()
         assertThat(allEdges).isEmpty()
 
@@ -51,7 +55,8 @@ class EdgeServiceTest {
         assertThat(allEdges!!.first().id).isEqualTo(edge?.id)
     }
 
-    @Test fun shouldCyclicEdgesExceptionDuringEdgeCreation() {
+    @Test
+    fun shouldCyclicEdgesExceptionDuringEdgeCreation() {
         val allEdges = edgeService?.getAllEdges()
         assertThat(allEdges).isEmpty()
 
@@ -62,7 +67,8 @@ class EdgeServiceTest {
         assertThat(cyclicEdgesException.message).isEqualTo("Edge creation not possible due to cyclic edges!")
     }
 
-    @Test fun shouldReturnAllEdges() {
+    @Test
+    fun shouldReturnAllEdges() {
         edgeService?.createEdge(CreateEdgeDto(1, 2))
         edgeService?.createEdge(CreateEdgeDto(1, 3))
         edgeService?.createEdge(CreateEdgeDto(1, 4))
@@ -73,7 +79,8 @@ class EdgeServiceTest {
         assertThat(allEdges).hasSize(4)
     }
 
-    @Test fun shouldReturnEdgeById() {
+    @Test
+    fun shouldReturnEdgeById() {
         val createdEdge = edgeService?.createEdge(CreateEdgeDto(1, 2))
 
         val edge = edgeService?.findById(createdEdge!!.id)
@@ -84,7 +91,8 @@ class EdgeServiceTest {
         assertThat(edge.toId).isEqualTo(2)
     }
 
-    @Test fun shouldDeleteEdge() {
+    @Test
+    fun shouldDeleteEdge() {
         val edge = edgeService?.createEdge(CreateEdgeDto(1, 2))
         var allEdges = edgeService?.getAllEdges()
         assertThat(allEdges).hasSize(1)
@@ -95,7 +103,8 @@ class EdgeServiceTest {
         assertThat(allEdges).isEmpty()
     }
 
-    @Test fun shouldGetTree() {
+    @Test
+    fun shouldGetTree() {
         edgeService?.createEdge(CreateEdgeDto(1, 2))
         edgeService?.createEdge(CreateEdgeDto(2, 3))
         edgeService?.createEdge(CreateEdgeDto(3, 4))
