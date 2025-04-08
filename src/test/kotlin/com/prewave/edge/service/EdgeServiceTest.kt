@@ -10,12 +10,11 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.junit.jupiter.Testcontainers
 
 @Testcontainers
-@SpringBootTest(webEnvironment = RANDOM_PORT)
+@SpringBootTest
 class EdgeServiceTest {
 
     companion object {
@@ -44,12 +43,12 @@ class EdgeServiceTest {
         var allEdges = edgeService?.getAllEdges()
         assertThat(allEdges).isEmpty()
 
-        val edgeId = edgeService?.createEdge(CreateEdgeDto(1, 2))
+        val edge = edgeService?.createEdge(CreateEdgeDto(1, 2))
 
-        assertThat(edgeId).isNotNull()
+        assertThat(edge).isNotNull()
         allEdges = edgeService?.getAllEdges()
         assertThat(allEdges).hasSize(1)
-        assertThat(allEdges!!.first().id).isEqualTo(edgeId)
+        assertThat(allEdges!!.first().id).isEqualTo(edge?.id)
     }
 
     @Test fun shouldCyclicEdgesExceptionDuringEdgeCreation() {
@@ -75,22 +74,22 @@ class EdgeServiceTest {
     }
 
     @Test fun shouldReturnEdgeById() {
-        val edgeId = edgeService?.createEdge(CreateEdgeDto(1, 2))
+        val createdEdge = edgeService?.createEdge(CreateEdgeDto(1, 2))
 
-        val edge = edgeService?.findById(edgeId!!)
+        val edge = edgeService?.findById(createdEdge!!.id)
 
         assertThat(edge).isNotNull()
-        assertThat(edge!!.id).isEqualTo(edgeId)
+        assertThat(edge!!.id).isEqualTo(createdEdge?.id)
         assertThat(edge.fromId).isEqualTo(1)
         assertThat(edge.toId).isEqualTo(2)
     }
 
     @Test fun shouldDeleteEdge() {
-        val edgeId = edgeService?.createEdge(CreateEdgeDto(1, 2))
+        val edge = edgeService?.createEdge(CreateEdgeDto(1, 2))
         var allEdges = edgeService?.getAllEdges()
         assertThat(allEdges).hasSize(1)
 
-        edgeService?.deleteById(edgeId!!)
+        edgeService?.deleteById(edge!!.id)
 
         allEdges = edgeService?.getAllEdges()
         assertThat(allEdges).isEmpty()

@@ -26,7 +26,7 @@ class EdgeService(private val dslContext: DSLContext) {
     /**
      * Creates edge.
      */
-    fun createEdge(createEdgeDto: CreateEdgeDto): Int? {
+    fun createEdge(createEdgeDto: CreateEdgeDto): EdgeResponseDto {
         val edgesForTree = getEdgesForTree(createEdgeDto.toId)
         val filteredEdges = edgesForTree.filter { edge -> edge.get(EDGE.TO_ID) == createEdgeDto.fromId }
         if (filteredEdges.isNotEmpty()) {
@@ -34,14 +34,14 @@ class EdgeService(private val dslContext: DSLContext) {
                                        createEdgeDto.fromId,
                                        createEdgeDto.toId)
         }
-        val edgeIdRecord = dslContext.insertInto(EDGE)
+        val edgeRecord = dslContext.insertInto(EDGE)
             .set(EDGE.FROM_ID, createEdgeDto.fromId)
             .set(EDGE.TO_ID, createEdgeDto.toId)
-            .returningResult(EDGE.ID)
+            .returningResult(EDGE.ID, EDGE.FROM_ID, EDGE.TO_ID)
             .fetchOne()
 
-        if (edgeIdRecord != null) {
-            return edgeIdRecord.get(EDGE.ID)
+        if (edgeRecord != null) {
+            return toEdgeResponseDto(edgeRecord)
         } else throw EntityNotFoundException(EDGE.name, "Edge not found")
     }
 

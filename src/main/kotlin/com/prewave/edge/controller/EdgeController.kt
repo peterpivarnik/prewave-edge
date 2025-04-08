@@ -20,9 +20,9 @@ class EdgeController(var edgeService: EdgeService) {
      */
     @PostMapping(value = ["/edge"])
     fun createEdge(@RequestBody @FromIdToId createEdgeDto: CreateEdgeDto): ResponseEntity<EdgeResponseDto> {
-        val edgeId = edgeService.createEdge(createEdgeDto)
-        return ResponseEntity.created(URI.create("http://localhost:8080/edge/${edgeId}"))
-            .build()
+        val edge = edgeService.createEdge(createEdgeDto)
+        return ResponseEntity.created(URI.create("http://localhost:8080/edge/${edge.id}"))
+            .body(edge)
     }
 
     /**
